@@ -17,7 +17,7 @@ export default function AdminEmpresas() {
     const fetchData = async () => {
       try {
         // Fetch company data
-        const response = await fetch('/api/get-leads')
+        const response = await fetch('http://localhost:5000/api/leads')
         const data = await response.json()
         
         if (data.success && data.leads) {

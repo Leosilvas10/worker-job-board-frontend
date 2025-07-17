@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import LeadModal from '../src/components/LeadModal.jsx'
 import JobCard from '../src/components/JobCard/JobCard.jsx'
-import { useJobStats, useJobFormatting } from '../src/hooks/useJobStats'
+import { useJobStats } from '../src/hooks/useJobStats'
+
+function formatJobCount(count) {
+  if (count >= 1000) return (count / 1000).toFixed(1) + 'k';
+  return count.toString();
+}
 
 const Vagas = () => {
   const [jobs, setJobs] = useState([])
@@ -24,7 +29,7 @@ const Vagas = () => {
 
   // Hook para estatísticas reais
   const { stats: jobStats } = useJobStats()
-  const { formatJobCount } = useJobFormatting()
+  // Removido hook inexistente useJobFormatting
 
   useEffect(() => {
     setIsClient(true) // Set isClient to true on the client-side
@@ -47,10 +52,12 @@ const Vagas = () => {
         const data = await response.json()
         console.log('📋 Dados recebidos da API:', data)
 
-        if (data.success && data.data && data.data.length > 0) {
-          console.log(`✅ ${data.data.length} vagas carregadas`)
-          setJobs(data.data)
-          setFilteredJobs(data.data)
+        // Sempre usar o campo 'data' do endpoint
+        const jobsList = Array.isArray(data.data) ? data.data : []
+        if (jobsList.length > 0) {
+          console.log(`✅ ${jobsList.length} vagas carregadas da API`)
+          setJobs(jobsList)
+          setFilteredJobs(jobsList)
           setLastUpdate(new Date())
           setLoading(false)
           return
@@ -345,7 +352,7 @@ const Vagas = () => {
   const handleApply = (job) => {
     // Registrar aplicação para analytics
     if (job.id || job.title) {
-      fetch('/api/jobs-analytics', {
+      fetch('/api/jobs-stats', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -372,7 +379,7 @@ const Vagas = () => {
       // Registrar view para as vagas visíveis na página atual
       currentJobs.forEach(job => {
         if (job.id || job.title) {
-          fetch('/api/jobs-analytics', {
+          fetch('/api/jobs-stats', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

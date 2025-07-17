@@ -51,7 +51,7 @@ export default function AdminVagas() {
       setError(null)
       console.log('🔄 Carregando vagas...')
 
-      const response = await fetch('/api/all-jobs-combined', {
+      const response = await fetch('/api/vagas/simple-jobs', {
         method: 'GET',
         headers: {
           'Cache-Control': 'no-cache'
@@ -65,11 +65,11 @@ export default function AdminVagas() {
       const data = await response.json()
       console.log('📊 Dados recebidos:', data)
 
-      if (data.success && data.jobs && Array.isArray(data.jobs)) {
-        setVagas(data.jobs)
-        setFilteredVagas(data.jobs)
+      if (data.success && data.data && Array.isArray(data.data)) {
+        setVagas(data.data)
+        setFilteredVagas(data.data)
         setLastUpdate(new Date().toLocaleString('pt-BR'))
-        console.log(`✅ ${data.jobs.length} vagas carregadas`)
+        console.log(`✅ ${data.data.length} vagas carregadas`)
       } else {
         console.error('❌ Formato de dados inválido:', data)
         setError('Formato de dados inválido recebido da API')

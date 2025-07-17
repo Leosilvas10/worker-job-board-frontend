@@ -128,14 +128,13 @@ export default function LeadModal({ isOpen, onClose, vaga = null }) {
     try {
       console.log('🚀 Enviando dados da pesquisa trabalhista:', formData)
 
-      const response = await fetch('/api/submit-lead', {
+      const response = await fetch('http://localhost:5000/api/leads', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...formData,
-          // Mapear campos para compatibilidade com backend
           nome_ultima_empresa: formData.nomeUltimaEmpresa,
           tipo_carteira: formData.tipoCarteira,
           recebeu_tudo_certinho: formData.recebeuTudoCertinho,
@@ -146,7 +145,7 @@ export default function LeadModal({ isOpen, onClose, vaga = null }) {
             titulo: vaga.title || vaga.titulo,
             empresa: vaga.company || vaga.empresa,
             localizacao: vaga.location || vaga.localizacao,
-            vagaUrl: vaga?.url || vaga?.redirectUrl, // URL real da vaga
+            vagaUrl: vaga?.url || vaga?.redirectUrl,
           } : null,
           fonte: 'modal_pesquisa_trabalhista_rapida',
           timestamp: new Date().toISOString()
@@ -210,6 +209,10 @@ export default function LeadModal({ isOpen, onClose, vaga = null }) {
             window.location.href = '/vagas';
           }
         }, 500)
+      } else if (result.message === 'Lead criado com sucesso') {
+        // Aceita como sucesso se o backend retornar essa mensagem
+        setIsSubmitting(false)
+        // Pode adicionar um feedback visual aqui se quiser
       } else {
         throw new Error(result.message || 'Erro no envio')
       }

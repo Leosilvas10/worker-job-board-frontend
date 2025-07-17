@@ -17,7 +17,7 @@ export default function DashboardStats() {
         setError(null)
 
         // Usar a API local que já está configurada e funcionando
-        const response = await fetch('/api/get-leads')
+        const response = await fetch('http://localhost:5000/api/leads')
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`)

@@ -21,7 +21,7 @@ export default function AdminLeads() {
     const fetchData = async () => {
       try {
         console.log('🔍 Carregando leads do painel admin...')
-        const response = await fetch('/api/get-leads')
+        const response = await fetch('http://localhost:5000/api/leads')
         const data = await response.json()
 
         console.log('📊 Resposta da API:', data)
@@ -342,11 +342,11 @@ export default function AdminLeads() {
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{lead.nome || lead.name}</div>
+                      <div className="text-sm font-medium text-gray-900">{lead.nome || lead.nomeCompleto || lead.name || 'Não informado'}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{lead.email}</div>
-                      <div className="text-sm text-gray-500">{lead.telefone || lead.phone}</div>
+                      <div className="text-sm text-gray-500">{lead.telefone || lead.whatsapp || lead.phone || 'Não informado'}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {lead.vaga?.titulo || lead.vaga_titulo || lead.interesse || 'Pesquisa Trabalhista'}
@@ -430,7 +430,7 @@ export default function AdminLeads() {
               {/* Header do Modal */}
               <div className="flex items-center justify-between pb-4 border-b">
                 <h2 className="text-2xl font-bold text-gray-900">
-                  📋 Detalhes do Lead - {selectedLead.nome}
+                  📋 Detalhes do Lead - {selectedLead.nome || selectedLead.nomeCompleto || selectedLead.name || 'Não informado'}
                 </h2>
                 <button
                   onClick={handleCloseModal}
@@ -450,7 +450,7 @@ export default function AdminLeads() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Nome Completo</label>
-                      <p className="mt-1 text-sm text-gray-900 bg-white p-2 rounded">{selectedLead.nome || 'Não informado'}</p>
+                      <p className="mt-1 text-sm text-gray-900 bg-white p-2 rounded">{selectedLead.nome || selectedLead.nomeCompleto || selectedLead.name || 'Não informado'}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Email</label>
@@ -458,7 +458,7 @@ export default function AdminLeads() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Telefone</label>
-                      <p className="mt-1 text-sm text-gray-900 bg-white p-2 rounded">{selectedLead.telefone || 'Não informado'}</p>
+                      <p className="mt-1 text-sm text-gray-900 bg-white p-2 rounded">{selectedLead.telefone || selectedLead.whatsapp || selectedLead.phone || 'Não informado'}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Idade</label>
@@ -528,11 +528,16 @@ export default function AdminLeads() {
                     <label className="block text-sm font-medium text-gray-700">Situações Enfrentadas</label>
                     <div className="mt-1 text-sm text-gray-900 bg-white p-2 rounded">
                       {(() => {
-                        const situacoes = selectedLead.situacoesDuranteTrabalho || 
+                        let situacoes = selectedLead.situacoesDuranteTrabalho || 
                                         selectedLead.situacoes_enfrentadas || 
                                         selectedLead.situacoesEnfrentadas || [];
-
-                        if (situacoes && situacoes.length > 0) {
+                        // Garante que seja array
+                        if (typeof situacoes === 'string') {
+                          situacoes = situacoes.split(',').map(s => s.trim());
+                        } else if (!Array.isArray(situacoes)) {
+                          situacoes = [];
+                        }
+                        if (situacoes.length > 0) {
                           return (
                             <ul className="list-disc list-inside space-y-1">
                               {situacoes.map((situacao, index) => (
