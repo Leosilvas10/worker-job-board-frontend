@@ -25,6 +25,21 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
+    "/calculadora": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/calculadora.js"
+    ],
+    "/contato": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/contato.js"
+    ],
+    "/empresas": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/empresas.js"
+    ],
     "/vagas": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
